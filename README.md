@@ -1,5 +1,7 @@
 # QKeysOnScreen
 
+[Demo video](https://www.youtube.com/watch?v=oOToCqTvW6U&feature=youtu.be)
+
 ## Synopsis
 
 QKeysOnScreen shows the current keys you're pressing on the screen. It is
