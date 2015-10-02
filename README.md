@@ -70,4 +70,5 @@ longer than it should.
 6. key-mon is bound to X11 in an unhealthy way. key-mon uses the X11 RECORD
    extension, which means it doesn't work with Wayland. QKeysOnScreen uses
 evdev. If you open a tty on one monitor, QKeysOnScreen will continue to work
-with the keys you are pressing in that tty. 
+with the keys you are pressing in that tty, and [QKeysOnScreen works perfectly
+with Wayland.](https://my.mixtape.moe/bttmbn.png)

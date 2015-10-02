@@ -1,6 +1,7 @@
 import evdev
 from PyQt5.QtCore import QObject, QSettings, Qt
 from PyQt5.QtGui import QIcon, QFont
+from PyQt5.QtX11Extras import QX11Info
 
 _devices = [evdev.InputDevice(d) for d in evdev.list_devices()]
 
@@ -39,7 +40,11 @@ def get_qfont_from_qsettings():
 
 def make_qkos_window(qwidget):
     qwidget.setWindowIcon(QIcon(':/images/qkos.png'))
-    qwidget.setAttribute(Qt.WA_TranslucentBackground)
+    # QtWayland does not yet support WA_TranslucentBackground (10/2/2015)
+    if not QX11Info.isPlatformX11(): 
+        qwidget.setStyleSheet('background-color: white')
+    else:
+        qwidget.setAttribute(Qt.WA_TranslucentBackground)
     qwidget.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
 
 def normalize_evdev_event(ev):

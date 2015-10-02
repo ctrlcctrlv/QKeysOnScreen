@@ -54,8 +54,6 @@ from utils import *
 QCoreApplication.setOrganizationName("QKeysOnScreen")
 QCoreApplication.setApplicationName("QKeysOnScreen")
 
-# First let's determine the devices...
-
 class QKeysOnScreen(QFrame):
     def __init__(self, qo):
         super(QKeysOnScreen, self).__init__()
@@ -98,8 +96,6 @@ class QKeysOnScreen(QFrame):
         self._recalculate_font_metrics(qfont)
         self.qkey.setFont(qfont)
         self.smallerQFont = False
-
-        #self.show()
 
     def _recalculate_font_metrics(self, qfont):
         self.monospace_width = QFontMetrics(qfont).averageCharWidth()
@@ -274,7 +270,8 @@ class QKOSHistoryWindow(QFrame, Draggable):
 
     def processIncoming(self, down):
         if self.paused: return
-        if all(i[1] for i in down): return # Don't insert meta keys, wait for combination
+        # Don't insert meta keys, wait for combination
+        if all(i[1] for i in down): return
 
         self.displaystate.insert(0, down[:])
 
