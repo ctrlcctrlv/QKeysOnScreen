@@ -5,8 +5,10 @@ from PyQt5.QtX11Extras import QX11Info
 
 _devices = [evdev.InputDevice(d) for d in evdev.list_devices()]
 
-def _get_device_with_key(key):
+def _get_devices_with_key(key):
     devcaps = {d.fn: d.capabilities(verbose=True) for d in _devices}
+
+    keyboards = list()
 
     for k, caps in devcaps.items():
         for typetuple, buttonlist in caps.items():
@@ -16,17 +18,19 @@ def _get_device_with_key(key):
                     name = [name] # Some devices names can be lists...
                 for n in name:
                     if n == key:
-                        return k
+                        keyboards.append(k)
+
+    return keyboards
 
 # FIXME: I didn't see a way to check the type of device, and capabilities() only
 # refers to the individual keys available. It would be better to check the dev
 # type, but for now this function just returns the device with the "Q" key.
 def get_keyboard_path():
-    return _get_device_with_key("KEY_Q")
+    return _get_devices_with_key("KEY_Q")
 
 # Same as above but with BTN_LEFT.
 def get_mouse_path():
-    return _get_device_with_key("BTN_LEFT")
+    return _get_devices_with_key("BTN_LEFT")
 
 def get_qfont_from_qsettings():
     qs = QSettings()
@@ -41,7 +45,7 @@ def get_qfont_from_qsettings():
 def make_qkos_window(qwidget):
     qwidget.setWindowIcon(QIcon(':/images/qkos.png'))
     # QtWayland does not yet support WA_TranslucentBackground (10/2/2015)
-    if not QX11Info.isPlatformX11(): 
+    if not QX11Info.isPlatformX11():
         qwidget.setStyleSheet('background-color: white')
     else:
         qwidget.setAttribute(Qt.WA_TranslucentBackground)
@@ -57,7 +61,10 @@ def normalize_evdev_event(ev):
 
     # Hackery for scroll wheels...
     if isinstance(event, evdev.RelEvent):
-        keycode = evdev.ecodes.REL[event.event.code]
+        if event.event.code == 0x0B:
+            keycode = evdev.ecodes.REL[0x06]
+        else:
+            keycode = evdev.ecodes.REL[event.event.code]
         if keycode != 'REL_WHEEL': return
         keystate = 0x4 # custom key state because scroll wheel never goes "UP"
     else:
@@ -75,8 +82,8 @@ class FakeScrollWheelUpEvent(evdev.events.InputEvent):
 
         self.value = self.keystate = value = 0x0
         self.keycode = "REL_WHEEL"
-    
-        t = time.time(); 
+
+        t = time.time();
         self.sec = int(t)
         self.usec = int((t%1)*1000000)
         self.type = 'REL'
@@ -104,7 +111,7 @@ class KeyInfo(QObject):
 
         kn = kn.replace('KEY_','')
         mf = self.meta_info(kn)
-        if not mf: 
+        if not mf:
             return (kn.capitalize(), False)
         else:
             print(self.qs.value("differentiate", True))

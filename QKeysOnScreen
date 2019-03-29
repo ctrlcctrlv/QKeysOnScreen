@@ -26,7 +26,9 @@
 import sys
 import time
 import evdev
+import operator
 import pickle
+from functools import reduce
 from threading import Thread
 from select import select
 from math import floor
@@ -592,7 +594,7 @@ class QKOSThread(Thread):
         self.kb = get_keyboard_path()
         self.mouse = get_mouse_path()
 
-        self.devices = filter(None, [self.kb, self.mouse])
+        self.devices = filter(None, reduce(operator.concat, [self.kb, self.mouse]))
         if not self.devices: return
         self.devices = map(evdev.InputDevice, self.devices)
 
