@@ -73,4 +73,4 @@ longer than it should.
    extension, which means it doesn't work with Wayland. QKeysOnScreen uses
 evdev. If you open a tty on one monitor, QKeysOnScreen will continue to work
 with the keys you are pressing in that tty, and [QKeysOnScreen works perfectly
-with Wayland.](https://my.mixtape.moe/bttmbn.png)
+with Wayland.](http://web.archive.org/web/20190326095102/https://track3.mixtape.moe/bttmbn.png)
