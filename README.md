@@ -31,7 +31,14 @@ GitHub issue.
 * Qt 5 (tested only on Qt 5.5.0)
 * PyQt5
 * Python 3
-* [python-evdev](https://python-evdev.readthedocs.org/en/latest/)
+* [python-evdev](https://python-evdev.readthedocs.org/en/latest/) 
+
+### Install on Debian/Ubuntu
+
+Next packages should be installed using your package manager:
+
+- `python3-pyqt5.qtx11extras`
+- `python3-evdev`
 
 ## Troubleshooting
 
