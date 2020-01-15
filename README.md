@@ -77,4 +77,4 @@ evdev. If you open a tty on one monitor, QKeysOnScreen will continue to work
 with the keys you are pressing in that tty, and [QKeysOnScreen works perfectly
 with Wayland.](http://web.archive.org/web/20190326095102if_/https://track3.mixtape.moe/bttmbn.png)
 
-[QKeysOnScreen in Wayland! :)](http://web.archive.org/web/20190326095102if_/https://track3.mixtape.moe/bttmbn.png)
+![QKeysOnScreen in Wayland! :)](http://web.archive.org/web/20190326095102if_/https://track3.mixtape.moe/bttmbn.png)
