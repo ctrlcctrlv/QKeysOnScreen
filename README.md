@@ -2,6 +2,8 @@
 
 [Demo video](https://www.youtube.com/watch?v=oOToCqTvW6U&feature=youtu.be)
 
+- [![Video preview](https://i.ytimg.com/vi/oOToCqTvW6U/hqdefault.jpg)](https://www.youtube.com/watch?v=oOToCqTvW6U&feature=youtu.be)
+
 ## Synopsis
 
 QKeysOnScreen shows the current keys you're pressing on the screen. It is
@@ -73,4 +75,6 @@ longer than it should.
    extension, which means it doesn't work with Wayland. QKeysOnScreen uses
 evdev. If you open a tty on one monitor, QKeysOnScreen will continue to work
 with the keys you are pressing in that tty, and [QKeysOnScreen works perfectly
-with Wayland.](http://web.archive.org/web/20190326095102/https://track3.mixtape.moe/bttmbn.png)
+with Wayland.](http://web.archive.org/web/20190326095102if_/https://track3.mixtape.moe/bttmbn.png)
+
+[QKeysOnScreen in Wayland! :)](http://web.archive.org/web/20190326095102if_/https://track3.mixtape.moe/bttmbn.png)
