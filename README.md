@@ -1,4 +1,4 @@
-# QKeysOnScreen
+# QKeysOnScreen & QKeysOnConsole
 
 [Demo video](https://www.youtube.com/watch?v=oOToCqTvW6U&feature=youtu.be)
 
@@ -8,6 +8,8 @@
 
 QKeysOnScreen shows the current keys you're pressing on the screen. It is
 QiPress / Keypose / KeyCastr for GNU/Linux.
+
+QKeysOnConsole does the same but on the current terminal.
 
 It uses PyQt5 for the GUI and evdev to read your keys, making it much better
 than `key-mon`. See "Comparison with key-mon" below.
@@ -25,6 +27,8 @@ QKeysOnScreen is very configurable, just about every aspect of it can be
 configured. You can change the font, color, window size, divider, ignored keys,
 and fadeout behavior. If you can think of more useful options, please open a
 GitHub issue.
+
+QKeysOnConsole has no options as yet but may some day.
 
 ## Dependencies
 
