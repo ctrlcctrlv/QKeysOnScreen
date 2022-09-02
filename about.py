@@ -24,7 +24,7 @@ class QKOSAbout(QDialog):
                     " on the screen. For more information see our <a href=\""+\
                     "https://github.com/ctrlcctrlv/QKeysOnScreen\">Github</a>"+\
                     " project."
-        qlabeldesc = QLabel(labeldesc)  
+        qlabeldesc = QLabel(labeldesc)
         qlabeldesc.setWordWrap(True)
         gridlayout.addWidget(qlabeldesc, 2,0)
 
@@ -35,8 +35,8 @@ class QKOSAbout(QDialog):
         uname_result = platform.uname()
         uname = '{} {}'.format(uname_result.system, uname_result.release)
         labelversions = ("<strong>Versions:</strong><br>Qt: {0}<br>PyQt: {1}"+\
-                        "<br>Python: {2}<br>OS: {3}<br>QKeysOnScreen: 0.0.1")\
-                        .format(QT_VERSION_STR, PYQT_VERSION_STR, 
+                        "<br>Python: {2}<br>OS: {3}<br>QKeysOnScreen: 1.0.0")\
+                        .format(QT_VERSION_STR, PYQT_VERSION_STR,
                                 platform.python_version(),
                                 uname, platform.machine())
         qlabelversions = QLabel(labelversions)
