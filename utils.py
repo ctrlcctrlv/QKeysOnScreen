@@ -1,7 +1,14 @@
 import evdev
 from PyQt5.QtCore import QObject, QSettings, Qt
 from PyQt5.QtGui import QIcon, QFont
-from PyQt5.QtX11Extras import QX11Info
+try:
+    from PyQt5.QtX11Extras import QX11Info
+except ImportError as ie:
+    class QX11Info:
+        @staticmethod
+        def isPlatformX11():
+            import warnings
+            warnings.warn("Tried to use QX11Info when couldn't import it!")
 
 _devices = [evdev.InputDevice(d) for d in evdev.list_devices()]
 
@@ -76,19 +83,6 @@ def normalize_evdev_event(ev):
 
     return (keycode, keystate)
 
-class FakeScrollWheelUpEvent(evdev.events.InputEvent):
-    def __init__(self):
-        import time
-
-        self.value = self.keystate = value = 0x0
-        self.keycode = "REL_WHEEL"
-
-        t = time.time();
-        self.sec = int(t)
-        self.usec = int((t%1)*1000000)
-        self.type = 'REL'
-        self.code = 'REL_WHEEL'
-
 class KeyInfo(QObject):
     def __init__(self):
         super(KeyInfo, self).__init__()
@@ -114,7 +108,6 @@ class KeyInfo(QObject):
         if not mf:
             return (kn.capitalize(), False)
         else:
-            print(self.qs.value("differentiate", True))
             return ('{}{}'.format(('Left ' if mf['left'] else 'Right ') \
                                 if self.qs.value("differentiate", True) else '',
                                 mf['type'].strip().capitalize()), mf)
@@ -126,6 +119,69 @@ class KeyInfo(QObject):
         return {'left' : (kn.lower().find('left') != -1),
                 'right': (kn.lower().find('right') != -1),
                 'type' : kn.lower().replace('left','').replace('right','')}
+
+class EvdevKeymon(object):
+    event = None
+    down = list()
+    ki = KeyInfo()
+    divider = ' + '
+    ignored_keys = list()
+
+    def processIncoming(self, ev):
+        newtext = None
+        evtuple = normalize_evdev_event(ev)
+        if not evtuple: return
+        (self.keycode, self.keystate) = evtuple
+
+        if self.keystate == 0x1 or self.keystate == 0x4: # key state DOWN or SCROLL
+            self.down.append(self.keycode)
+
+        if self.keystate == 0x0: #key state UP
+            try: self.down.remove(self.keycode)
+            except ValueError: return
+        # If multiple keys are down, only allow the list to grow, not to shrink.
+        if self.keystate == 0x0 or self.keystate == 0x2: #key state UP or HOLD
+            if len(self.down) > 0: return
+
+        if self.down:
+            displaykeys = [self.ki.key_name(k) for k in self.down]
+            self.emit = [] # For consumption by QKOSHistoryWindow.processIncoming
+
+            # It is possible to press two keys at the same time, but where none
+            # of them are meta keys. For clarity, we don't show combinations
+            # like "Q+T" since they make no sense unless specifically
+            # configured to do so, even though it is technically possible to
+            # hold the "Q" and "T" keys down at the same time.
+            display = []
+            for index, (keyname, metainfo) in enumerate(displaykeys):
+                if metainfo or index == len(displaykeys) - 1:
+                    display.append(keyname)
+                    self.emit.append((keyname, metainfo))
+
+            newtext = self.divider.join(display)
+
+            for item in [newtext] + display:
+                if self.ignored_keys and (item in self.ignored_keys):
+                    return
+
+        if self.keystate == 0x4: # key state SCROLL
+            self.event = FakeScrollWheelUpEvent()
+
+        return newtext
+
+class FakeScrollWheelUpEvent(evdev.events.InputEvent):
+    def __init__(self):
+        import time
+
+        self.value = self.keystate = value = 0x0
+        self.keycode = "REL_WHEEL"
+
+        t = time.time();
+        self.sec = int(t)
+        self.usec = int((t%1)*1000000)
+        self.type = 'REL'
+        self.code = 'REL_WHEEL'
+
 
 class QSettingsHandler(QObject):
     def __init__(self, qo):
