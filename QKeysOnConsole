@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env python3
 ################################################################################
-# QKeysOnScreen - Shows the current keys you're pressing on the screen         #
+# QKeysOnConsole - Outputs the current keys you're pressing on the console.    #
 #                                                                              #
 # Requires Evdev and QT5.                                                      #
 #                                                                              #
@@ -23,12 +23,34 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.     #
 ################################################################################
 
-PYTHON=`which python3`
-if [ -z "$PYTHON" ]; then
-    PYTHON=`which python`
-fi
-if [ -z "$PYTHON" ]; then
-    >&2 echo "Cannot run w/o Python."
-fi
+import sys
 
-$PYTHON QKeysOnScreen.py
+from PyQt5.QtWidgets import QApplication # only using to sleep main thread
+from PyQt5.QtCore import QObject
+from QKeysOnScreen import QKOSCommunicationObject, QKOSThread
+from utils import *
+
+class QKeysOnConsole:
+    def __init__(self, qo):
+        super(QKeysOnConsole, self).__init__()
+        self.qo = qo
+        self.ek = EvdevKeymon()
+
+    def processIncoming(self, ev):
+        newtext = self.ek.processIncoming(ev)
+        if not newtext: return
+
+        if self.ek.event is not None:
+            self.qo.message.emit(self.ek.event)
+            self.ek.event = None
+        print(newtext)
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    f = QKOSCommunicationObject()
+    qk = QKeysOnConsole(f)
+    client = QKOSThread(f)
+    client.daemon = True
+    client.start()
+    f.message.connect(qk.processIncoming)
+    sys.exit(app.exec_())
