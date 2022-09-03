@@ -38,11 +38,12 @@ from math import floor
 # want to run into collisions. `from x import *` is quite dangerous in Python,
 # despite how frequently it is used.
 from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice
-from PyQt5.QtWidgets import (QWidget, QToolTip, QPushButton, QApplication,
-                          QMessageBox, QLabel, QMainWindow, QFrame, QSizePolicy,
-                          QGridLayout, QAction, QColorDialog, QFontDialog,
-                          QInputDialog, QStyle, QGraphicsOpacityEffect, QDialog,
-                          QScrollArea, QTextEdit, QListWidget, QListWidgetItem)
+from PyQt5.QtWidgets import (QWidget, QToolTip, QPushButton, QMessageBox,
+                             QLabel, QMainWindow, QFrame, QSizePolicy,
+                             QGridLayout, QAction, QColorDialog, QFontDialog,
+                             QInputDialog, QStyle, QGraphicsOpacityEffect,
+                             QDialog, QScrollArea, QTextEdit, QListWidget,
+                             QListWidgetItem)
 from PyQt5.QtCore import pyqtSignal, QObject, QCoreApplication, QSettings
 from PyQt5.QtGui import QFont, QFontMetrics, QIcon, QPixmap, QPalette
 # Qt resource system, re-build with       `pyrcc5 resources.qrc -o resources.py`
@@ -50,6 +51,7 @@ import resources
 
 # SUBMODULES #
 from about import QKOSAbout
+from qkos import QKOSApplication
 from utils import *
 
 # These need to be set for QSettings to work properly.
@@ -534,7 +536,7 @@ class MainWindow(QMainWindow, Draggable):
         self.setGeometry(*self._get_geometry())
 
     def _get_screen_maxes(self):
-        qrect = QApplication.desktop().screenGeometry()
+        qrect = QKOSApplication.desktop().screenGeometry()
         desktop_width = qrect.width()
         desktop_height = qrect.height()
 
@@ -601,7 +603,7 @@ class QKOSCommunicationObject(QObject):
     settings = pyqtSignal(str, str)        # QSettings
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
+    app = QKOSApplication(sys.argv)
     f = QKOSCommunicationObject()
     mw = MainWindow(f)
     #mw2 = MainWindow(f)
