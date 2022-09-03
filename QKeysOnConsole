@@ -24,13 +24,13 @@
 ################################################################################
 
 import sys
+import signal
 
-from PyQt5.QtWidgets import QApplication # only using to sleep main thread
-from PyQt5.QtCore import QObject
 from QKeysOnScreen import QKOSCommunicationObject, QKOSThread
+from qkos import QKOSApplication
 from utils import *
 
-class QKeysOnConsole:
+class QKeysOnConsole(QObject):
     def __init__(self, qo):
         super(QKeysOnConsole, self).__init__()
         self.qo = qo
@@ -46,7 +46,7 @@ class QKeysOnConsole:
         print(newtext)
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
+    app = QKOSApplication(sys.argv)
     f = QKOSCommunicationObject()
     qk = QKeysOnConsole(f)
     client = QKOSThread(f)
